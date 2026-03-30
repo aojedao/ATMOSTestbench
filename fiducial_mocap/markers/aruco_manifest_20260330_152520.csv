@@ -1,0 +1,6 @@
+role,marker_id,filename,marker_size_cm,dpi,dictionary
+CORNER_NW,0,aruco_corner_nw_id0_20260330_152520.png,15.0,300,DICT_4X4_50
+CORNER_NE,1,aruco_corner_ne_id1_20260330_152520.png,15.0,300,DICT_4X4_50
+CORNER_SW,2,aruco_corner_sw_id2_20260330_152520.png,15.0,300,DICT_4X4_50
+CORNER_SE,3,aruco_corner_se_id3_20260330_152520.png,15.0,300,DICT_4X4_50
+ROBOT,4,aruco_robot_id4_20260330_152520.png,15.0,300,DICT_4X4_50

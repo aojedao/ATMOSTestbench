@@ -1,0 +1,25 @@
+timestamp: '20260330_160611'
+image_width: 640
+image_height: 360
+pattern_cols: 5
+pattern_rows: 4
+square_size_m: 0.035
+num_valid_images: 20
+rms_reprojection_error: 2.4380066123463227
+mean_reprojection_error: 0.42700372874026693
+camera_matrix:
+- - 205.9518132679188
+  - 0.0
+  - 335.2734330879475
+- - 0.0
+  - 206.70599656334576
+  - 175.86596776618165
+- - 0.0
+  - 0.0
+  - 1.0
+distortion_coefficients:
+- - -0.3381703208796916
+  - 0.2369725101254728
+  - 0.010028198212228633
+  - 0.01773632989208763
+  - -0.09656614622570997
