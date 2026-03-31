@@ -45,7 +45,7 @@ Notes:
 
 ## Camera Calibration (Phase 2.2)
 
-Use the calibration script to estimate camera intrinsics from a chessboard pattern.
+Use the calibration script to estimate fisheye camera intrinsics from a chessboard pattern.
 
 Live capture mode (interactive):
 
@@ -68,6 +68,7 @@ Defaults:
 Output:
 - Timestamped calibration YAML, e.g. `camera_calibration_YYYYMMDD_HHMMSS.yaml`
 - Optional timestamped capture images when `--save-captures` is enabled
+- YAML includes fisheye-ready fields: `DIM`, `K`, `D` compatible equivalents (`dim`, `camera_matrix`, `distortion_coefficients`)
 
 ## MoCap Tracker Surface Visualization (Phase 2.3 - Step 1)
 

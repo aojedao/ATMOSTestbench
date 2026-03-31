@@ -26,6 +26,7 @@ ARUCO_DICT_OPTIONS = {
     "DICT_6X6_50": cv2.aruco.DICT_6X6_50,
     "DICT_7X7_50": cv2.aruco.DICT_7X7_50,
 }
+WINDOW_NAME = "ATMOS MoCap Tracker - Surface Step"
 
 
 def parse_args() -> argparse.Namespace:
@@ -79,6 +80,37 @@ def parse_args() -> argparse.Namespace:
         default=0.20,
         help="XYZ axis length in meters for visualization (default: 0.20).",
     )
+    parser.add_argument(
+        "--robot-id",
+        type=int,
+        default=4,
+        help="Marker ID used for the robot (default: 4).",
+    )
+    parser.add_argument(
+        "--marker-length-m",
+        type=float,
+        default=0.15,
+        help="Physical marker side length in meters for pose estimation (default: 0.15).",
+    )
+    parser.add_argument(
+        "--origin-id",
+        type=int,
+        default=0,
+        help="Marker ID used as world-frame origin for XYZ drawing (default: 0).",
+    )
+    parser.add_argument(
+        "--undistort",
+        dest="undistort",
+        action="store_true",
+        help="Enable undistortion before marker detection (default).",
+    )
+    parser.add_argument(
+        "--no-undistort",
+        dest="undistort",
+        action="store_false",
+        help="Disable undistortion and process raw camera frames.",
+    )
+    parser.set_defaults(undistort=True)
     return parser.parse_args()
 
 
@@ -110,16 +142,36 @@ def find_latest_calibration_file(calibration_dir: Path) -> Path:
     return files[-1]
 
 
-def load_calibration(calibration_file: Path) -> Tuple[np.ndarray, np.ndarray]:
+def load_calibration(calibration_file: Path) -> Tuple[np.ndarray, np.ndarray, Optional[Tuple[int, int]]]:
     with calibration_file.open("r", encoding="utf-8") as f:
         data = yaml.safe_load(f)
 
-    if "camera_matrix" not in data or "distortion_coefficients" not in data:
+    camera_key = "camera_matrix" if "camera_matrix" in data else "K"
+    distortion_key = "distortion_coefficients" if "distortion_coefficients" in data else "D"
+
+    if camera_key not in data or distortion_key not in data:
         raise ValueError("Calibration YAML missing required keys.")
 
-    camera_matrix = np.array(data["camera_matrix"], dtype=np.float64)
-    dist_coeffs = np.array(data["distortion_coefficients"], dtype=np.float64)
-    return camera_matrix, dist_coeffs
+    camera_matrix = np.array(data[camera_key], dtype=np.float64)
+    dist_coeffs = np.array(data[distortion_key], dtype=np.float64)
+
+    calibration_dim: Optional[Tuple[int, int]] = None
+    if "dim" in data and isinstance(data["dim"], list) and len(data["dim"]) == 2:
+        calibration_dim = (int(data["dim"][0]), int(data["dim"][1]))
+    elif "image_width" in data and "image_height" in data:
+        calibration_dim = (int(data["image_width"]), int(data["image_height"]))
+
+    # Fisheye model uses 4 coefficients. If calibration produced 5+, keep first 4.
+    dist_coeffs = dist_coeffs.reshape(-1)
+    if dist_coeffs.size >= 4:
+        dist_coeffs = dist_coeffs[:4].reshape(4, 1)
+    else:
+        raise ValueError(
+            "Calibration distortion coefficients are insufficient for fisheye undistortion. "
+            "Need at least 4 values."
+        )
+
+    return camera_matrix, dist_coeffs, calibration_dim
 
 
 def build_aruco_detector(dictionary_name: str) -> Tuple[cv2.aruco.Dictionary, cv2.aruco.DetectorParameters]:
@@ -191,6 +243,7 @@ def draw_xyz_axes(
     camera_matrix: np.ndarray,
     dist_coeffs: np.ndarray,
     axis_length_m: float,
+    forced_origin_px: Optional[Tuple[float, float]] = None,
 ) -> None:
     axes_points_3d = np.array(
         [
@@ -209,7 +262,13 @@ def draw_xyz_axes(
         camera_matrix,
         dist_coeffs,
     )
-    p = projected.reshape(-1, 2).astype(np.int32)
+    p_float = projected.reshape(-1, 2)
+
+    if forced_origin_px is not None:
+        delta = np.array([forced_origin_px[0], forced_origin_px[1]], dtype=np.float32) - p_float[0]
+        p_float = p_float + delta
+
+    p = p_float.astype(np.int32)
 
     origin = tuple(p[0])
     px = tuple(p[1])
@@ -225,6 +284,47 @@ def draw_xyz_axes(
     cv2.putText(frame, "Z", (pz[0] + 6, pz[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
 
 
+def compute_robot_planar_position(
+    table_image_points: np.ndarray,
+    table_side_m: float,
+    robot_center_px: Tuple[float, float],
+) -> Optional[np.ndarray]:
+    table_xy = np.array(
+        [
+            [0.0, 0.0],
+            [table_side_m, 0.0],
+            [table_side_m, table_side_m],
+            [0.0, table_side_m],
+        ],
+        dtype=np.float32,
+    )
+
+    homography, _ = cv2.findHomography(table_image_points, table_xy, method=0)
+    if homography is None:
+        return None
+
+    pt = np.array([[[robot_center_px[0], robot_center_px[1]]]], dtype=np.float32)
+    mapped = cv2.perspectiveTransform(pt, homography)
+    return mapped.reshape(2)
+
+
+def setup_fisheye_undistort_maps(
+    undistort_dim: Tuple[int, int],
+    camera_matrix: np.ndarray,
+    dist_coeffs: np.ndarray,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    # Use DIM/K/D directly from calibration output (reference undistort flow).
+    map1, map2 = cv2.fisheye.initUndistortRectifyMap(
+        camera_matrix,
+        dist_coeffs,
+        np.eye(3),
+        camera_matrix,
+        undistort_dim,
+        cv2.CV_16SC2,
+    )
+    return map1, map2, camera_matrix.copy()
+
+
 def main() -> None:
     args = parse_args()
     corner_id_map = parse_corner_ids(args.corner_ids)
@@ -233,9 +333,9 @@ def main() -> None:
     if calibration_file is None:
         calibration_file = find_latest_calibration_file(Path("fiducial_mocap/calibration"))
 
-    camera_matrix, dist_coeffs = load_calibration(calibration_file)
+    camera_matrix, dist_coeffs, calibration_dim = load_calibration(calibration_file)
     aruco_dictionary, aruco_params = build_aruco_detector(args.aruco_dict)
-    table_points_3d = table_object_points(args.table_side_m)
+    _ = table_object_points(args.table_side_m)
 
     cap = cv2.VideoCapture(args.camera_index)
     if not cap.isOpened():
@@ -246,7 +346,15 @@ def main() -> None:
     print("Corner ID map:")
     for key in CORNER_KEYS:
         print(f"  - {key}: {corner_id_map[key]}")
+    print(f"Robot ID: {args.robot_id}")
+    print(f"Origin ID: {args.origin_id}")
+    print(f"Undistort (fisheye): {'ON' if args.undistort else 'OFF'}")
     print("Controls: q=quit")
+
+    undistort_map1: Optional[np.ndarray] = None
+    undistort_map2: Optional[np.ndarray] = None
+    undistort_camera_matrix: Optional[np.ndarray] = None
+    undistort_dim: Optional[Tuple[int, int]] = calibration_dim
 
     try:
         while True:
@@ -254,7 +362,35 @@ def main() -> None:
             if not ok:
                 continue
 
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            active_frame = frame
+            active_camera_matrix = camera_matrix
+            active_dist_coeffs = dist_coeffs
+
+            if args.undistort:
+                if undistort_map1 is None or undistort_map2 is None or undistort_camera_matrix is None:
+                    if undistort_dim is None:
+                        undistort_dim = (frame.shape[1], frame.shape[0])
+                    undistort_map1, undistort_map2, undistort_camera_matrix = setup_fisheye_undistort_maps(
+                        undistort_dim,
+                        camera_matrix,
+                        dist_coeffs,
+                    )
+
+                remap_src = frame
+                if undistort_dim is not None and (frame.shape[1], frame.shape[0]) != undistort_dim:
+                    remap_src = cv2.resize(frame, undistort_dim, interpolation=cv2.INTER_LINEAR)
+
+                active_frame = cv2.remap(
+                    remap_src,
+                    undistort_map1,
+                    undistort_map2,
+                    interpolation=cv2.INTER_LINEAR,
+                    borderMode=cv2.BORDER_CONSTANT,
+                )
+                active_camera_matrix = undistort_camera_matrix
+                active_dist_coeffs = np.zeros((4, 1), dtype=np.float64)
+
+            gray = cv2.cvtColor(active_frame, cv2.COLOR_BGR2GRAY)
             corners, ids, _ = cv2.aruco.detectMarkers(
                 gray,
                 aruco_dictionary,
@@ -263,9 +399,17 @@ def main() -> None:
 
             status_text = "Waiting for table markers"
             detected_count = 0
+            robot_status_text = "Robot: not detected"
 
             if ids is not None and len(ids) > 0:
-                cv2.aruco.drawDetectedMarkers(frame, corners, ids)
+                cv2.aruco.drawDetectedMarkers(active_frame, corners, ids)
+
+                marker_rvecs, marker_tvecs, _ = cv2.aruco.estimatePoseSingleMarkers(
+                    corners,
+                    args.marker_length_m,
+                    active_camera_matrix,
+                    active_dist_coeffs,
+                )
 
                 id_to_center = marker_centers(corners, ids)
                 surface_image_points = get_table_image_points(id_to_center, corner_id_map)
@@ -276,32 +420,79 @@ def main() -> None:
                 )
 
                 if surface_image_points is not None:
-                    draw_surface_overlay(frame, surface_image_points)
+                    draw_surface_overlay(active_frame, surface_image_points)
 
-                    ok_pnp, rvec, tvec = cv2.solvePnP(
-                        table_points_3d,
-                        surface_image_points,
-                        camera_matrix,
-                        dist_coeffs,
-                        flags=cv2.SOLVEPNP_ITERATIVE,
-                    )
-                    if ok_pnp:
-                        draw_xyz_axes(
-                            frame,
-                            rvec,
-                            tvec,
-                            camera_matrix,
-                            dist_coeffs,
-                            axis_length_m=args.axis_length_m,
-                        )
-                        status_text = "Table surface + XYZ frame locked"
+                    ids_flat = ids.flatten().tolist()
+
+                    if args.origin_id in ids_flat:
+                        status_text = f"Table + XYZ locked on ID{args.origin_id}"
                     else:
-                        status_text = "Table found, pose solve failed"
+                        status_text = f"Table found, but origin ID{args.origin_id} not detected"
+
+                    if args.robot_id in id_to_center:
+                        robot_center = id_to_center[args.robot_id]
+                        robot_xy = compute_robot_planar_position(
+                            surface_image_points,
+                            args.table_side_m,
+                            robot_center,
+                        )
+                        cv2.circle(
+                            active_frame,
+                            (int(robot_center[0]), int(robot_center[1])),
+                            8,
+                            (0, 165, 255),
+                            -1,
+                        )
+                        cv2.putText(
+                            active_frame,
+                            f"ID{args.robot_id}",
+                            (int(robot_center[0]) + 8, int(robot_center[1]) + 22),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.6,
+                            (0, 165, 255),
+                            2,
+                            cv2.LINE_AA,
+                        )
+                        if robot_xy is not None:
+                            robot_status_text = (
+                                f"Robot ID{args.robot_id}: x={robot_xy[0]:.3f} m, "
+                                f"y={robot_xy[1]:.3f} m"
+                            )
+                        else:
+                            robot_status_text = "Robot detected, homography solve failed"
+                    else:
+                        robot_status_text = f"Robot ID{args.robot_id}: not detected"
                 else:
                     status_text = "Need all 4 corner markers for table outline"
+                    if args.robot_id in id_to_center:
+                        robot_status_text = (
+                            f"Robot ID{args.robot_id} detected. "
+                            "Show all 4 table markers to compute XY."
+                        )
+
+                ids_flat = ids.flatten().tolist()
+                if args.origin_id in ids_flat:
+                    origin_idx = ids_flat.index(args.origin_id)
+                    origin_center = id_to_center[args.origin_id]
+                    draw_xyz_axes(
+                        active_frame,
+                        marker_rvecs[origin_idx],
+                        marker_tvecs[origin_idx],
+                        active_camera_matrix,
+                        active_dist_coeffs,
+                        axis_length_m=args.axis_length_m,
+                        forced_origin_px=origin_center,
+                    )
+                    cv2.circle(
+                        active_frame,
+                        (int(origin_center[0]), int(origin_center[1])),
+                        8,
+                        (0, 0, 255),
+                        2,
+                    )
 
             cv2.putText(
-                frame,
+                active_frame,
                 status_text,
                 (16, 28),
                 cv2.FONT_HERSHEY_SIMPLEX,
@@ -311,7 +502,7 @@ def main() -> None:
                 cv2.LINE_AA,
             )
             cv2.putText(
-                frame,
+                active_frame,
                 f"Table markers detected: {detected_count}/4",
                 (16, 56),
                 cv2.FONT_HERSHEY_SIMPLEX,
@@ -320,15 +511,44 @@ def main() -> None:
                 2,
                 cv2.LINE_AA,
             )
+            cv2.putText(
+                active_frame,
+                robot_status_text,
+                (16, 84),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.7,
+                (255, 255, 255),
+                2,
+                cv2.LINE_AA,
+            )
+            cv2.putText(
+                active_frame,
+                f"Undistort fisheye: {'ON' if args.undistort else 'OFF'}",
+                (16, 112),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.65,
+                (255, 255, 255),
+                2,
+                cv2.LINE_AA,
+            )
 
-            cv2.imshow("ATMOS MoCap Tracker - Surface Step", frame)
+            cv2.imshow(WINDOW_NAME, active_frame)
             key = cv2.waitKey(1) & 0xFF
-            if key == ord("q"):
+            if key in (ord("q"), 27):
+                break
+
+            if cv2.getWindowProperty(WINDOW_NAME, cv2.WND_PROP_VISIBLE) < 1:
                 break
 
     finally:
-        cap.release()
+        if cap.isOpened():
+            cap.release()
+        try:
+            cv2.destroyWindow(WINDOW_NAME)
+        except cv2.error:
+            pass
         cv2.destroyAllWindows()
+        cv2.waitKey(1)
 
 
 if __name__ == "__main__":
