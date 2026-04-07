@@ -1,0 +1,231 @@
+[0.111s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install']
+[0.111s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=24, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0x73e28fa57220>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x73e28fc08910>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x73e28fc08910>>, mixin_verb=('build',))
+[0.224s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.225s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/Gazebo.meta'
+[0.226s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/fastdds.meta'
+[0.226s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/fastrtps.meta'
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.226s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.226s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/ros2_ws'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.226s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.227s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.236s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['ignore', 'ignore_ament_install']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'ignore'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'ignore_ament_install'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['colcon_pkg']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'colcon_pkg'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['colcon_meta']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'colcon_meta'
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['ros']
+[0.237s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'ros'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['cmake', 'python']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'cmake'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'python'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extensions ['python_setup_py']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation) by extension 'python_setup_py'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extensions ['ignore', 'ignore_ament_install']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extension 'ignore'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extension 'ignore_ament_install'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extensions ['colcon_pkg']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extension 'colcon_pkg'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extensions ['colcon_meta']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extension 'colcon_meta'
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extensions ['ros']
+[0.238s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_interfaces) by extension 'ros'
+[0.240s] DEBUG:colcon.colcon_core.package_identification:Package 'src/ros2-aruco-pose-estimation/aruco_interfaces' with type 'ros.ament_cmake' and name 'aruco_interfaces'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extensions ['ignore', 'ignore_ament_install']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extension 'ignore'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extension 'ignore_ament_install'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extensions ['colcon_pkg']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extension 'colcon_pkg'
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extensions ['colcon_meta']
+[0.240s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extension 'colcon_meta'
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extensions ['ros']
+[0.241s] Level 1:colcon.colcon_core.package_identification:_identify(src/ros2-aruco-pose-estimation/aruco_pose_estimation) by extension 'ros'
+[0.241s] DEBUG:colcon.colcon_core.package_identification:Package 'src/ros2-aruco-pose-estimation/aruco_pose_estimation' with type 'ros.ament_cmake' and name 'aruco_pose_estimation'
+[0.241s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.241s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.242s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.242s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.242s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_args' from command line to 'None'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_target' from command line to 'None'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_clean_cache' from command line to 'False'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_clean_first' from command line to 'False'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'cmake_force_configure' from command line to 'False'
+[0.258s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'ament_cmake_args' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'catkin_cmake_args' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_interfaces' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.259s] DEBUG:colcon.colcon_core.verb:Building package 'aruco_interfaces' with the following arguments: {'ament_cmake_args': None, 'build_base': '/ros2_ws/build/aruco_interfaces', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/ros2_ws/install/aruco_interfaces', 'merge_install': False, 'path': '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces', 'symlink_install': True, 'test_result_base': None}
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_args' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_target' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_clean_cache' from command line to 'False'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_clean_first' from command line to 'False'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'cmake_force_configure' from command line to 'False'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'ament_cmake_args' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'catkin_cmake_args' from command line to 'None'
+[0.259s] Level 5:colcon.colcon_core.verb:set package 'aruco_pose_estimation' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.259s] DEBUG:colcon.colcon_core.verb:Building package 'aruco_pose_estimation' with the following arguments: {'ament_cmake_args': None, 'build_base': '/ros2_ws/build/aruco_pose_estimation', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/ros2_ws/install/aruco_pose_estimation', 'merge_install': False, 'path': '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_pose_estimation', 'symlink_install': True, 'test_result_base': None}
+[0.259s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.260s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.260s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces' with build type 'ament_cmake'
+[0.260s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces'
+[0.263s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.263s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.263s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.274s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/ros2_ws/install/aruco_interfaces
+[2.023s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/ros2_ws/install/aruco_interfaces
+[2.024s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /ros2_ws/build/aruco_interfaces -- -j24 -l24
+[3.760s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /ros2_ws/build/aruco_interfaces -- -j24 -l24
+[3.769s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_interfaces': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /ros2_ws/build/aruco_interfaces
+[4.328s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(aruco_interfaces)
+[4.328s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_interfaces' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /ros2_ws/build/aruco_interfaces
+[4.338s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces' for CMake module files
+[4.338s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces' for CMake config files
+[4.339s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_interfaces', 'cmake_prefix_path')
+[4.340s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.ps1'
+[4.340s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.dsv'
+[4.341s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.sh'
+[4.341s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib'
+[4.342s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_interfaces', 'ld_library_path_lib')
+[4.342s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.ps1'
+[4.342s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.dsv'
+[4.342s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.sh'
+[4.343s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/bin'
+[4.343s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib/pkgconfig/aruco_interfaces.pc'
+[4.344s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib/python3.10/site-packages'
+[4.345s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/bin'
+[4.345s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.ps1'
+[4.346s] INFO:colcon.colcon_core.shell:Creating package descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.dsv'
+[4.346s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.sh'
+[4.347s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.bash'
+[4.347s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.zsh'
+[4.348s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/ros2_ws/install/aruco_interfaces/share/colcon-core/packages/aruco_interfaces)
+[4.349s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(aruco_interfaces)
+[4.349s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces' for CMake module files
+[4.349s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces' for CMake config files
+[4.350s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_interfaces', 'cmake_prefix_path')
+[4.351s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.ps1'
+[4.351s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.dsv'
+[4.351s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/cmake_prefix_path.sh'
+[4.352s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib'
+[4.352s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_interfaces', 'ld_library_path_lib')
+[4.352s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.ps1'
+[4.352s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.dsv'
+[4.353s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/hook/ld_library_path_lib.sh'
+[4.353s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/bin'
+[4.353s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib/pkgconfig/aruco_interfaces.pc'
+[4.353s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/lib/python3.10/site-packages'
+[4.353s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_interfaces/bin'
+[4.354s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.ps1'
+[4.354s] INFO:colcon.colcon_core.shell:Creating package descriptor '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.dsv'
+[4.354s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.sh'
+[4.355s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.bash'
+[4.355s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_interfaces/share/aruco_interfaces/package.zsh'
+[4.355s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/ros2_ws/install/aruco_interfaces/share/colcon-core/packages/aruco_interfaces)
+[4.356s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_pose_estimation' with build type 'ament_cmake'
+[4.356s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/ros2_ws/src/ros2-aruco-pose-estimation/aruco_pose_estimation'
+[4.356s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[4.356s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[4.372s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_pose_estimation': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /ros2_ws/src/ros2-aruco-pose-estimation/aruco_pose_estimation -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/ros2_ws/install/aruco_pose_estimation
+[5.239s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_pose_estimation' returned '0': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /ros2_ws/src/ros2-aruco-pose-estimation/aruco_pose_estimation -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/ros2_ws/install/aruco_pose_estimation
+[5.240s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_pose_estimation': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /ros2_ws/build/aruco_pose_estimation -- -j24 -l24
+[5.546s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_pose_estimation' returned '0': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /ros2_ws/build/aruco_pose_estimation -- -j24 -l24
+[5.548s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/ros2_ws/build/aruco_pose_estimation': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /ros2_ws/build/aruco_pose_estimation
+[5.864s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(aruco_pose_estimation)
+[5.865s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation' for CMake module files
+[5.866s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/ros2_ws/build/aruco_pose_estimation' returned '0': AMENT_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/ros2_ws/install/aruco_interfaces:/opt/ros/humble LD_LIBRARY_PATH=/ros2_ws/install/aruco_interfaces/lib:${LD_LIBRARY_PATH} PYTHONPATH=/ros2_ws/install/aruco_interfaces/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /ros2_ws/build/aruco_pose_estimation
+[5.867s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation' for CMake config files
+[5.868s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_pose_estimation', 'cmake_prefix_path')
+[5.869s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.ps1'
+[5.870s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.dsv'
+[5.870s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.sh'
+[5.871s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib'
+[5.871s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/bin'
+[5.871s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib/pkgconfig/aruco_pose_estimation.pc'
+[5.871s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib/python3.10/site-packages'
+[5.871s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/bin'
+[5.871s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.ps1'
+[5.872s] INFO:colcon.colcon_core.shell:Creating package descriptor '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.dsv'
+[5.872s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.sh'
+[5.872s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.bash'
+[5.873s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.zsh'
+[5.873s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/ros2_ws/install/aruco_pose_estimation/share/colcon-core/packages/aruco_pose_estimation)
+[5.873s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(aruco_pose_estimation)
+[5.874s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation' for CMake module files
+[5.874s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation' for CMake config files
+[5.875s] Level 1:colcon.colcon_core.shell:create_environment_hook('aruco_pose_estimation', 'cmake_prefix_path')
+[5.875s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.ps1'
+[5.875s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.dsv'
+[5.875s] INFO:colcon.colcon_core.shell:Creating environment hook '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/hook/cmake_prefix_path.sh'
+[5.876s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib'
+[5.876s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/bin'
+[5.876s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib/pkgconfig/aruco_pose_estimation.pc'
+[5.876s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/lib/python3.10/site-packages'
+[5.876s] Level 1:colcon.colcon_core.environment:checking '/ros2_ws/install/aruco_pose_estimation/bin'
+[5.876s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.ps1'
+[5.877s] INFO:colcon.colcon_core.shell:Creating package descriptor '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.dsv'
+[5.877s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.sh'
+[5.878s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.bash'
+[5.879s] INFO:colcon.colcon_core.shell:Creating package script '/ros2_ws/install/aruco_pose_estimation/share/aruco_pose_estimation/package.zsh'
+[5.879s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/ros2_ws/install/aruco_pose_estimation/share/colcon-core/packages/aruco_pose_estimation)
+[5.880s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[5.880s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[5.880s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[5.880s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[5.901s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[5.901s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[5.901s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[5.901s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[5.901s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.NotSupported: Unable to autolaunch a dbus-daemon without a $DISPLAY for X11
+[5.901s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[5.902s] INFO:colcon.colcon_core.shell:Creating prefix script '/ros2_ws/install/local_setup.ps1'
+[5.904s] INFO:colcon.colcon_core.shell:Creating prefix util module '/ros2_ws/install/_local_setup_util_ps1.py'
+[5.906s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/ros2_ws/install/setup.ps1'
+[5.908s] INFO:colcon.colcon_core.shell:Creating prefix script '/ros2_ws/install/local_setup.sh'
+[5.909s] INFO:colcon.colcon_core.shell:Creating prefix util module '/ros2_ws/install/_local_setup_util_sh.py'
+[5.910s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/ros2_ws/install/setup.sh'
+[5.911s] INFO:colcon.colcon_core.shell:Creating prefix script '/ros2_ws/install/local_setup.bash'
+[5.911s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/ros2_ws/install/setup.bash'
+[5.912s] INFO:colcon.colcon_core.shell:Creating prefix script '/ros2_ws/install/local_setup.zsh'
+[5.913s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/ros2_ws/install/setup.zsh'

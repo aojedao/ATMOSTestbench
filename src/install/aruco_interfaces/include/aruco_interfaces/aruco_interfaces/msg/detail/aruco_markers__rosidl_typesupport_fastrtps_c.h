@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_typesupport_fastrtps_c/aruco_interfaces/msg/detail/aruco_markers__rosidl_typesupport_fastrtps_c.h

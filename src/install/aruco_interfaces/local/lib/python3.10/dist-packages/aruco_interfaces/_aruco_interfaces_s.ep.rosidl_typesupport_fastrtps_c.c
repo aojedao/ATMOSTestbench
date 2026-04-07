@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_generator_py/aruco_interfaces/_aruco_interfaces_s.ep.rosidl_typesupport_fastrtps_c.c

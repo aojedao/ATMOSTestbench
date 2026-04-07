@@ -1,0 +1,14 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : [],
+		"nodes" : []
+	},
+	"installers" : [],
+	"paths" : 
+	{
+		"build" : "aruco_interfaces__py",
+		"source" : "/ros2_ws/src/build/aruco_interfaces/aruco_interfaces__py"
+	}
+}
