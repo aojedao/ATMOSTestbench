@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/ament_cmake_core/aruco_interfacesConfig.cmake

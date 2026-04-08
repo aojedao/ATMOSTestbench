@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_generator_py/aruco_interfaces/msg/_aruco_markers_s.c

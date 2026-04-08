@@ -1,0 +1,1 @@
+/ros2_ws/src/ros2-aruco-pose-estimation/aruco_interfaces/msg/ArucoMarkers.msg

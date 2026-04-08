@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_generator_cpp/aruco_interfaces/msg/aruco_markers.hpp

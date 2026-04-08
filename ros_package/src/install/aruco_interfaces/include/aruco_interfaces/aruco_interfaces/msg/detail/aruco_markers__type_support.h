@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_generator_c/aruco_interfaces/msg/detail/aruco_markers__type_support.h

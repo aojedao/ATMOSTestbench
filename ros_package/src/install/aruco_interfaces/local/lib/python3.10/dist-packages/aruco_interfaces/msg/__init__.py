@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_interfaces/rosidl_generator_py/aruco_interfaces/msg/__init__.py

@@ -1,0 +1,1 @@
+/ros2_ws/src/build/aruco_pose_estimation/ament_cmake_environment_hooks/local_setup.bash
