@@ -45,48 +45,34 @@ Notes:
 
 ## Camera Calibration (Phase 2.2)
 
-Use the calibration script to estimate camera intrinsics from a chessboard pattern.
+For optimal accuracy, we use the standard `ros2 cameracalibrator` tool to obtain camera intrinsics.
 
-Live capture mode (interactive):
+1.  **Calibration**: Run the calibrator with a standard checkerboard.
+2.  **Implementation**: The resulting parameters (K and D matrices) are manually plugged into the camera driver.
 
+## Camera Driver: `camera_direct.py`
+
+Due to compatibility issues with the **Insta360 Ace Pro 2** camera, we use a custom driver called `camera_direct.py`. This script handles the GStreamer pipeline and injects the calibration parameters directly into the ROS 2 `CameraInfo` messages.
+
+To run the camera driver:
 ```bash
-python3 fiducial_mocap/camera_calibration.py --save-captures
+python3 camera_direct.py
 ```
 
-Offline mode from existing images:
+## MoCap Tracker (Phase 2.3)
 
+We use the `aruco_pose_estimation` ROS 2 package for real-time tracking.
+
+### 1. Run the ArUco Node
 ```bash
-python3 fiducial_mocap/camera_calibration.py --image-dir path/to/calib_images
+ros2 run aruco_pose_estimation aruco_node.py --ros-args \
+  -p marker_size:=0.075 \
+  -p aruco_dictionary_id:="DICT_4X4_50" \
+  -p image_topic:="/image_raw" \
+  -p camera_info_topic:="/camera_info"
 ```
 
-Defaults:
-- Chessboard inner corners: `9 x 6`
-- Square size: `0.024 m`
-- Required valid frames (live mode): `20`
-- Output directory: `fiducial_mocap/calibration/`
-
-Output:
-- Timestamped calibration YAML, e.g. `camera_calibration_YYYYMMDD_HHMMSS.yaml`
-- Optional timestamped capture images when `--save-captures` is enabled
-
-## MoCap Tracker Surface Visualization (Phase 2.3 - Step 1)
-
-Use the tracker script to visualize the table surface from 4 corner markers and draw
-an XYZ reference frame at the back-left corner.
-
-Default run:
-
+### 2. Visualize the Output
 ```bash
-python3 fiducial_mocap/mocap_tracker.py --camera-index 0
+ros2 run rqt_image_view rqt_image_view
 ```
-
-Example with custom table marker IDs (for IDs 1,3,5,7):
-
-```bash
-python3 fiducial_mocap/mocap_tracker.py --corner-ids 1,3,5,7
-```
-
-Notes:
-- Corner ID order is: `back_left,back_right,front_right,front_left`.
-- The script auto-loads the newest calibration file from `fiducial_mocap/calibration/` unless `--calibration-file` is provided.
-- Press `q` to exit.
