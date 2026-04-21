@@ -48,20 +48,20 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--pattern-cols",
         type=int,
-        default=5,
+        default=9,
         help="Number of inner corners per chessboard row (default: 9).",
     )
     parser.add_argument(
         "--pattern-rows",
         type=int,
-        default=4,
+        default=6,
         help="Number of inner corners per chessboard column (default: 6).",
     )
     parser.add_argument(
         "--square-size-m",
         type=float,
-        default=0.035,
-        help="Physical chessboard square size in meters (default: 0.035).",
+        default=0.024,
+        help="Physical chessboard square size in meters (default: 0.024).",
     )
     parser.add_argument(
         "--required-frames",
