@@ -1,42 +1,45 @@
 FROM osrf/ros:humble-desktop
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# 1. Consolidated System Dependencies
+# 1. Install System Dependencies (Git, X11, Foxglove)
 RUN apt-get update && apt-get install -y \
-    ffmpeg libavcodec-dev libavformat-dev libswscale-dev v4l-utils git \
-    python3-pip python3-transforms3d \
-    # Added from your installed list
-    build-essential cmake autoconf automake \
-    curl vim wget zip unzip \
-    default-jdk default-libmysqlclient-dev unixodbc-dev \
-    gstreamer1.0-libav gstreamer1.0-plugins-bad gstreamer1.0-plugins-good \
+    git \
+    x11-apps \
+    x11-xserver-utils \
+    ros-humble-foxglove-bridge \
+    python3-pip \
+    python3-colcon-common-extensions \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install ROS 2 Packages
-RUN apt-get update && apt-get install -y \
-    ros-humble-usb-cam ros-humble-v4l2-camera \
-    ros-humble-rqt-image-view ros-humble-cv-bridge \
-    ros-humble-image-transport ros-humble-image-transport-plugins \
-    ros-humble-tf2-geometry-msgs ros-humble-tf-transformations \
-    && rm -rf /var/lib/apt/lists/*
+# 2. Ensure ROS is sourced for every new bash session
+# This makes it so you don't have to 'source' manually in every terminal
+RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc
 
-# 3. Workspace Setup
+# Set up environment variables so the build works without manual sourcing
+ENV ROS_DISTRO=humble
+ENV ROS_ROOT=/opt/ros/humble
+
+# 3. Setup Workspace and Clone Repo
 WORKDIR /ros2_ws/src
 
-# Clone the repo. 
-# We use the '.' to ensure the contents go into /ros2_ws/src directly
+# We use a trick here: if the folder exists, we remove it to ensure a clean clone
 RUN git clone https://github.com/aojedao/ATMOSTestbench.git .
 
-# 3. Install dependencies for the cloned repo
-# Move back to the workspace root so rosdep can see the 'src' folder
+# 4. CRITICAL CLEANUP: Remove the pre-built folders from the repo
+RUN find . -type d \( -name "build" -o -name "install" -o -name "log" \) -exec rm -rf {} +
+
+# 5. Install ROS Dependencies
 WORKDIR /ros2_ws
+RUN apt-get update && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y && \
+    rm -rf /var/lib/apt/lists/*
 
-#RUN apt-get update && \
-#    rosdep update && \
-#    rosdep install --from-paths src --ignore-src -r -y && \
-#    rm -rf /var/lib/apt/lists/*
+# 6. Build the workspace
+# We use 'bash -c' to ensure the ROS environment is loaded for the build
+RUN bash -c "source /opt/ros/humble/setup.bash && colcon build --symlink-install"
 
-# 4. Build the workspace
-#RUN source /opt/ros/humble/setup.bash && \
-#    colcon build --symlink-install
+# Add the workspace to your bashrc as well
+RUN echo "source /ros2_ws/install/setup.bash" >> /root/.bashrc
+
+# Set the default working directory
+WORKDIR /ros2_ws

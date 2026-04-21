@@ -15,15 +15,16 @@ class GStreamerCameraNode(Node):
         self.bridge = CvBridge()
         
         # Robust GStreamer Pipeline
+        #video0 for Lambda, video2 for laptop
         pipeline = (
-            "v4l2src device=/dev/video0 ! "
+            "v4l2src device=/dev/video2 ! "
             "image/jpeg, width=640, height=360, framerate=30/1 ! "
             "jpegdec ! videoconvert ! appsink drop=true"
         )
         self.cap = cv2.VideoCapture(pipeline, cv2.CAP_GSTREAMER)
 
         if not self.cap.isOpened():
-            self.get_logger().error('GStreamer failed to open! Check /dev/video0')
+            self.get_logger().error('GStreamer failed to open! Check /dev/video2')
             exit()
 
         self.timer = self.create_timer(0.033, self.timer_callback)

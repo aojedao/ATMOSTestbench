@@ -14,9 +14,10 @@ from aruco_pose_estimation.pose_estimation import pose_estimation
 
 # ROS2 message imports
 from sensor_msgs.msg import CameraInfo, Image
-from geometry_msgs.msg import PoseArray
+from geometry_msgs.msg import PoseArray, TransformStamped
 from aruco_interfaces.msg import ArucoMarkers
 from rcl_interfaces.msg import ParameterDescriptor, ParameterType
+from tf2_ros import TransformBroadcaster
 
 class ArucoNode(rclpy.node.Node):
     def __init__(self):
@@ -57,6 +58,7 @@ class ArucoNode(rclpy.node.Node):
         self.poses_pub = self.create_publisher(PoseArray, self.markers_visualization_topic, 10)
         self.markers_pub = self.create_publisher(ArucoMarkers, self.detected_markers_topic, 10)
         self.image_pub = self.create_publisher(Image, self.output_image_topic, 10)
+        self.tf_broadcaster = TransformBroadcaster(self)
 
         self.info_msg = None
         self.intrinsic_mat = None
@@ -112,6 +114,7 @@ class ArucoNode(rclpy.node.Node):
         if len(markers.marker_ids) > 0:
             self.poses_pub.publish(pose_array)
             self.markers_pub.publish(markers)
+            self.publish_robot_transform(markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
 
@@ -146,8 +149,27 @@ class ArucoNode(rclpy.node.Node):
         if len(markers.marker_ids) > 0:
             self.poses_pub.publish(pose_array)
             self.markers_pub.publish(markers)
+            self.publish_robot_transform(markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
+
+    def publish_robot_transform(self, markers: ArucoMarkers):
+        if 4 not in markers.marker_ids:
+            return
+
+        robot_index = markers.marker_ids.index(4)
+        robot_pose = markers.poses[robot_index]
+
+        transform = TransformStamped()
+        transform.header.stamp = markers.header.stamp
+        transform.header.frame_id = "marker_0"
+        transform.child_frame_id = "marker_4"
+        transform.transform.translation.x = robot_pose.position.x
+        transform.transform.translation.y = robot_pose.position.y
+        transform.transform.translation.z = robot_pose.position.z
+        transform.transform.rotation = robot_pose.orientation
+
+        self.tf_broadcaster.sendTransform(transform)
 
     def initialize_parameters(self):
         self.declare_parameter("marker_size", 0.0625)
