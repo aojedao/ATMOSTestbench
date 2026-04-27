@@ -4,6 +4,7 @@ import rclpy.node
 from rclpy.qos import qos_profile_sensor_data
 from cv_bridge import CvBridge
 import message_filters
+from geometry_msgs.msg import Pose
 
 import numpy as np
 import cv2
@@ -63,6 +64,7 @@ class ArucoNode(rclpy.node.Node):
         self.info_msg = None
         self.intrinsic_mat = None
         self.distortion = None
+        self.filtered_pose_by_id = {}
 
         # --- LEGACY API FIX FOR OPENCV 4.5.4 ---
         # Instead of ArucoDetector, we use the Dictionary and Parameters separately
@@ -111,15 +113,23 @@ class ArucoNode(rclpy.node.Node):
             markers=markers
         )
 
-        if len(markers.marker_ids) > 0:
-            self.publish_robot_transform(markers)
-            self.poses_pub.publish(pose_array)
-            self.markers_pub.publish(markers)
+        filtered_markers, filtered_pose_array = self.apply_pose_filter(
+            markers=markers,
+            stamp=img_msg.header.stamp,
+            frame_id=markers.header.frame_id,
+        )
+
+        self.publish_robot_transform(filtered_markers)
+        self.poses_pub.publish(filtered_pose_array)
+        self.markers_pub.publish(filtered_markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
 
 
     def rgb_depth_sync_callback(self, rgb_msg: Image, depth_msg: Image):
+        if self.info_msg is None:
+            return
+
         cv_depth_image = self.bridge.imgmsg_to_cv2(depth_msg, desired_encoding="16UC1")
         cv_image = self.bridge.imgmsg_to_cv2(rgb_msg, desired_encoding="rgb8")
 
@@ -147,12 +157,149 @@ class ArucoNode(rclpy.node.Node):
             markers=markers
         )
 
-        if len(markers.marker_ids) > 0:
-            self.publish_robot_transform(markers)
-            self.poses_pub.publish(pose_array)
-            self.markers_pub.publish(markers)
+        filtered_markers, filtered_pose_array = self.apply_pose_filter(
+            markers=markers,
+            stamp=rgb_msg.header.stamp,
+            frame_id=markers.header.frame_id,
+        )
+
+        self.publish_robot_transform(filtered_markers)
+        self.poses_pub.publish(filtered_pose_array)
+        self.markers_pub.publish(filtered_markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
+
+
+    def stamp_to_seconds(self, stamp) -> float:
+        return float(stamp.sec) + (float(stamp.nanosec) * 1e-9)
+
+
+    def normalize_quaternion(self, quat: np.ndarray) -> np.ndarray:
+        norm = np.linalg.norm(quat)
+        if norm < 1e-12:
+            return np.array([0.0, 0.0, 0.0, 1.0], dtype=np.float64)
+        return quat / norm
+
+
+    def make_zero_pose(self) -> Pose:
+        pose = Pose()
+        pose.position.x = 0.0
+        pose.position.y = 0.0
+        pose.position.z = 0.0
+        pose.orientation.x = 0.0
+        pose.orientation.y = 0.0
+        pose.orientation.z = 0.0
+        pose.orientation.w = 1.0
+        return pose
+
+
+    def is_zero_pose(self, pose: Pose) -> bool:
+        return (
+            pose.position.x == 0.0
+            and pose.position.y == 0.0
+            and pose.position.z == 0.0
+            and pose.orientation.x == 0.0
+            and pose.orientation.y == 0.0
+            and pose.orientation.z == 0.0
+            and pose.orientation.w == 1.0
+        )
+
+
+    def smooth_pose(self, previous_pose: Pose, current_pose: Pose) -> Pose:
+        smoothed = Pose()
+        alpha = float(self.pose_filter_alpha)
+
+        smoothed.position.x = (alpha * current_pose.position.x) + ((1.0 - alpha) * previous_pose.position.x)
+        smoothed.position.y = (alpha * current_pose.position.y) + ((1.0 - alpha) * previous_pose.position.y)
+        smoothed.position.z = (alpha * current_pose.position.z) + ((1.0 - alpha) * previous_pose.position.z)
+
+        previous_quat = np.array([
+            previous_pose.orientation.x,
+            previous_pose.orientation.y,
+            previous_pose.orientation.z,
+            previous_pose.orientation.w,
+        ], dtype=np.float64)
+        current_quat = np.array([
+            current_pose.orientation.x,
+            current_pose.orientation.y,
+            current_pose.orientation.z,
+            current_pose.orientation.w,
+        ], dtype=np.float64)
+
+        previous_quat = self.normalize_quaternion(previous_quat)
+        current_quat = self.normalize_quaternion(current_quat)
+
+        # Keep quaternion continuity to avoid sudden 180-degree flips.
+        if np.dot(previous_quat, current_quat) < 0.0:
+            current_quat = -current_quat
+
+        blended_quat = self.normalize_quaternion(
+            (alpha * current_quat) + ((1.0 - alpha) * previous_quat)
+        )
+
+        smoothed.orientation.x = float(blended_quat[0])
+        smoothed.orientation.y = float(blended_quat[1])
+        smoothed.orientation.z = float(blended_quat[2])
+        smoothed.orientation.w = float(blended_quat[3])
+        return smoothed
+
+
+    def apply_pose_filter(self, markers: ArucoMarkers, stamp, frame_id: str):
+        current_time = self.stamp_to_seconds(stamp)
+
+        for idx, marker_id in enumerate(markers.marker_ids):
+            marker_id = int(marker_id)
+            if marker_id == 0:
+                continue
+
+            measured_pose = markers.poses[idx]
+            if measured_pose.position.x == 0.0 and measured_pose.position.y == 0.0:
+                continue
+
+            if marker_id in self.filtered_pose_by_id:
+                previous_pose = self.filtered_pose_by_id[marker_id]["pose"]
+                filtered_pose = self.smooth_pose(previous_pose, measured_pose)
+            else:
+                filtered_pose = measured_pose
+
+            self.filtered_pose_by_id[marker_id] = {
+                "pose": filtered_pose,
+                "last_seen": current_time,
+            }
+
+        filtered_markers = ArucoMarkers()
+        filtered_pose_array = PoseArray()
+        filtered_markers.header.stamp = stamp
+        filtered_markers.header.frame_id = frame_id
+        filtered_pose_array.header.stamp = stamp
+        filtered_pose_array.header.frame_id = frame_id
+
+        fixed_marker_ids = self.target_marker_ids
+        for marker_id in fixed_marker_ids:
+            filtered_markers.marker_ids.append(marker_id)
+
+            if marker_id == 0:
+                filtered_markers.poses.append(self.make_zero_pose())
+                filtered_pose_array.poses.append(self.make_zero_pose())
+                continue
+
+            marker_state = self.filtered_pose_by_id.get(marker_id)
+            if marker_state is None:
+                filtered_markers.poses.append(self.make_zero_pose())
+                filtered_pose_array.poses.append(self.make_zero_pose())
+                continue
+
+            age = current_time - marker_state["last_seen"]
+            if age > float(self.marker_hold_time_sec):
+                del self.filtered_pose_by_id[marker_id]
+                filtered_markers.poses.append(self.make_zero_pose())
+                filtered_pose_array.poses.append(self.make_zero_pose())
+                continue
+
+            filtered_markers.poses.append(marker_state["pose"])
+            filtered_pose_array.poses.append(marker_state["pose"])
+
+        return filtered_markers, filtered_pose_array
 
 
     def publish_robot_transform(self, markers: ArucoMarkers):
@@ -164,6 +311,9 @@ class ArucoNode(rclpy.node.Node):
             # So for all m_id != 0, parent is marker_0.
             
             pose = markers.poses[i]
+            if self.is_zero_pose(pose):
+                continue
+
             transform = TransformStamped()
             transform.header.stamp = markers.header.stamp
             
@@ -197,6 +347,9 @@ class ArucoNode(rclpy.node.Node):
         self.declare_parameter("detected_markers_topic", "/aruco_markers")
         self.declare_parameter("markers_visualization_topic", "/aruco_poses")
         self.declare_parameter("output_image_topic", "/aruco_image")
+        self.declare_parameter("pose_filter_alpha", 0.35)
+        self.declare_parameter("marker_hold_time_sec", 0.30)
+        self.declare_parameter("target_marker_ids", [0, 1, 2, 3, 4])
 
         self.marker_size = self.get_parameter("marker_size").value
         self.dictionary_id_name = self.get_parameter("aruco_dictionary_id").value
@@ -208,6 +361,9 @@ class ArucoNode(rclpy.node.Node):
         self.detected_markers_topic = self.get_parameter("detected_markers_topic").value
         self.markers_visualization_topic = self.get_parameter("markers_visualization_topic").value
         self.output_image_topic = self.get_parameter("output_image_topic").value
+        self.pose_filter_alpha = self.get_parameter("pose_filter_alpha").value
+        self.marker_hold_time_sec = self.get_parameter("marker_hold_time_sec").value
+        self.target_marker_ids = [int(marker_id) for marker_id in self.get_parameter("target_marker_ids").value]
 
 def main():
     rclpy.init()
