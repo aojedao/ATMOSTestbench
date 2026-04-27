@@ -159,6 +159,7 @@ def pose_estimation(rgb_frame: np.array, depth_frame: np.array, aruco_detector: 
         logger.warn("Waiting for Marker 0 (Origin) to establish the planar coordinate system...")
         # If 0 isn't visible, we skip publishing to enforce the strict relative frame requirement.
 
+
     return frame_processed, pose_array, markers
 
 

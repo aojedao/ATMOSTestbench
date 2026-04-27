@@ -112,11 +112,12 @@ class ArucoNode(rclpy.node.Node):
         )
 
         if len(markers.marker_ids) > 0:
+            self.publish_robot_transform(markers)
             self.poses_pub.publish(pose_array)
             self.markers_pub.publish(markers)
-            self.publish_robot_transform(markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
+
 
     def rgb_depth_sync_callback(self, rgb_msg: Image, depth_msg: Image):
         cv_depth_image = self.bridge.imgmsg_to_cv2(depth_msg, desired_encoding="16UC1")
@@ -147,29 +148,43 @@ class ArucoNode(rclpy.node.Node):
         )
 
         if len(markers.marker_ids) > 0:
+            self.publish_robot_transform(markers)
             self.poses_pub.publish(pose_array)
             self.markers_pub.publish(markers)
-            self.publish_robot_transform(markers)
 
         self.image_pub.publish(self.bridge.cv2_to_imgmsg(frame, "rgb8"))
 
+
     def publish_robot_transform(self, markers: ArucoMarkers):
-        if 4 not in markers.marker_ids:
-            return
+        transforms = []
+        for i, m_id in enumerate(markers.marker_ids):
+            # If m_id is 0, we can publish it relative to the camera frame if we have its tvec/rvec.
+            # However, according to pose_estimation.py, all poses in 'markers.poses' are already 
+            # relative to ID 0 if ID 0 is found. 
+            # So for all m_id != 0, parent is marker_0.
+            
+            pose = markers.poses[i]
+            transform = TransformStamped()
+            transform.header.stamp = markers.header.stamp
+            
+            if m_id == 0:
+                # This would be an identity transform if using marker_0 as parent.
+                # Usually we skip it or use camera_link as parent for marker_0.
+                # But since the user wants to ignore camera frame and care about relative 
+                # to ID 0, we'll focus on the children of marker_0.
+                continue
 
-        robot_index = markers.marker_ids.index(4)
-        robot_pose = markers.poses[robot_index]
+            transform.header.frame_id = "marker_0"
+            transform.child_frame_id = f"marker_{m_id}"
+            transform.transform.translation.x = pose.position.x
+            transform.transform.translation.y = pose.position.y
+            transform.transform.translation.z = pose.position.z
+            transform.transform.rotation = pose.orientation
+            transforms.append(transform)
 
-        transform = TransformStamped()
-        transform.header.stamp = markers.header.stamp
-        transform.header.frame_id = "marker_0"
-        transform.child_frame_id = "marker_4"
-        transform.transform.translation.x = robot_pose.position.x
-        transform.transform.translation.y = robot_pose.position.y
-        transform.transform.translation.z = robot_pose.position.z
-        transform.transform.rotation = robot_pose.orientation
+        if transforms:
+            self.tf_broadcaster.sendTransform(transforms)
 
-        self.tf_broadcaster.sendTransform(transform)
 
     def initialize_parameters(self):
         self.declare_parameter("marker_size", 0.0625)
